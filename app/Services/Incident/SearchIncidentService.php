@@ -9,17 +9,20 @@ class SearchIncidentService {
 
     public function searchService( SearchIncidentRequest $request ) {
         $user = auth()->user();
-        $query = Incident::query()->with(['media']);
+        
+
+       
+        $query = Incident::query()->with(['media'])->with(['area']);
 
         if ( in_array( $user->role_id, [ 1, 4 ] ) ) {
 
         } elseif ( $user->role_id == 2 ) {
             $query->where( 'user_id', $user->id );
         } elseif ( $user->role_id == 3 ) {
-            $query->where( 'area_id', $user->id );
+            $query->where( 'area_id', $user->id );//revisar esta condicion
         }
 
-         $filters = ['title', 'description', 'direction'];
+           $filters = ['title', 'description', 'direction'];
 
          foreach($filters as $filter){
             $query->when($request->filled($filter),function ($q)use ($request,$filter) {
@@ -27,8 +30,8 @@ class SearchIncidentService {
             });
          }
          return $query
-         ->latest()
-         ->paginate(5)
+         ->latest() 
+         ->paginate(10)
          ->withQueryString();
 
     }

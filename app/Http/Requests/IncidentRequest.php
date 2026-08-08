@@ -24,10 +24,11 @@ class IncidentRequest extends ApiFormRequest {
             'title'=>'required|string|max:255',
             'description'=>'required|string',
             'direction'=>'required|string',
-            'latitude'=>'required|decimal:2,9',
-            'longitude'=>'required|decimal:2,10',
+            'latitude'=>'sometimes|decimal:2,9',
+            'longitude'=>'sometimes|decimal:2,10',
              'status'=>'sometimes',
             'area_id'=>'required|exists:areas,id',
+            'archivos.*'=>'file|mimes:jpeg,png,jpg,mp4,mov,avi|max:51200', 
         ];
     }
 
@@ -47,9 +48,7 @@ class IncidentRequest extends ApiFormRequest {
             'direction.string'   => 'La dirección debe ser una cadena de texto.',
 
             // Latitud y Longitud
-            'latitude.required'  => 'La latitud es obligatoria para ubicar el punto.',
             'latitude.numeric'   => 'La latitud debe ser un valor numérico.',
-            'longitude.required' => 'La longitud es obligatoria para ubicar el punto.',
             'longitude.numeric'  => 'La longitud debe ser un valor numérico.',
 
 

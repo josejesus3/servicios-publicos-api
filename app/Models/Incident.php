@@ -11,10 +11,6 @@ class Incident extends Model {
     use HasFactory, SoftDeletes;
     protected $table = 'incidents';
     protected $fillable = [ 'title', 'description', 'direction', 'latitude', 'longitude', 'status', 'user_id', 'area_id','resolution_expire' ];
-    protected $hidden = [
-        'updated_at',
-        'created_at',
-    ];
     protected $casts = [
     'latitude'  => 'double',
     'longitude' => 'double',

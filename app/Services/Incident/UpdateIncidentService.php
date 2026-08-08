@@ -4,38 +4,36 @@ namespace App\Services\Incident;
 
 use App\Http\Requests\IncidentRequest;
 use App\Models\Incident;
+use Faker\Core\File;
 use Illuminate\Support\Facades\DB;
 
-class CreateIncidentService
+class UpdateIncidentService
 {
-    public function createIncident(IncidentRequest $request)
+
+    public function updateIncident(IncidentRequest $request, Incident $incident)
     {
         $user = auth()->user();
         if ($user->role_id == 3) {
             abort(403, 'El director no puede crear reportes');
-        } else {
-            return DB::transaction(function () use ($request) {
-                $validateData = $request->validated();
-                $validateData['user_id'] = auth()->id();
-                $incident = Incident::create($validateData);
-
-
-                if ($request->hasFile('archivos')) {
-                    $this->storeFiles($request->file('archivos'), $incident);
-                }
-                return $incident;
-            });
         }
+        $validateDate = $request->validated();
+        $incident->update($validateDate);
+
+        if ($request->hasFile('archivos')) {
+            $this->storeFiles($request->file('archivos'), $incident);
+        }
+        return $incident;
     }
 
-    private function storeFiles(array $files, Incident $incident)
+    public function storeFiles(array $files, Incident $incident)
     {
+
         foreach ($files as $file) {
             $path = $file->store('reportes', 'public');
             $extension = strtolower($file->getClientOriginalExtension());
             $tipo = in_array($extension, ['mp4', 'mov', 'avi']) ? 'video' : 'image';
 
-            $incident->media()->create([
+            $incident->media()->update([
                 'file_path' => $path,
                 'file_type' => $tipo,
             ]);
